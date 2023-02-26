@@ -33,12 +33,11 @@
                       </div>
                       <div class="mb-3">
                           <label for="noteBody" class="form-label">Note</label>
-                          <textarea class="form-control" id="noteBody" name="noteBody" rows="5" v-model="newNote.text" required></textarea>
+                          <textarea class="form-control" id="noteBody" name="noteBody" rows="15" v-model="newNote.text" required></textarea>
                       </div>
                   </form>
               </div>
               <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" @click="showCreateNoteModal = false">Cancel</button>
                   <button type="submit" class="btn btn-primary" form="createNoteForm" @click="addNote">{{createNoteLabel}}</button>
               </div>
           </div>
@@ -67,8 +66,13 @@
                       <p v-else style="white-space: pre; overflow-x: auto;">{{currentNote.text}}</p>
                   </div>
                   <div class="card-footer" v-if="selectedIndex !== null">
+                      <div style="float:left;">
+                        <button class="btn" :class="{ 'btn-primary': !editMode, 'btn-success': editMode }" style="margin-right:10px;" @click="!editMode ? switchEditMode() : updateNote()">
+                          {{editNoteLabel}}
+                        </button>
+                        <span v-if="editMode" style="cursor:pointer; margin-left:20px" @click="cancelChanges()">Cancel</span>
+                      </div>
                       <div style="float:right;">
-                          <button class="btn" :class="{ 'btn-primary': !editMode, 'btn-success': editMode }" style="margin-right:10px;" @click="!editMode ? switchEditMode() : updateNote()">{{editNoteLabel}}</button>
                           <button type="button" class="btn btn-danger" @click="deleteNote()">
                               <i class="fa-solid fa-trash"></i>
                           </button>
@@ -182,6 +186,13 @@ export default {
           // handle the error
           console.error(error)
       });
+  },
+  cancelChanges() {
+      if(!confirm("Are you sure you want to cancel all changes?")) {
+          return;
+      }
+      this.switchViewMode();
+      this.selectNote(this.selectedIndex);
   },
   deleteNote() {
       if(!confirm("Are you sure you want to delete this note?")) {
