@@ -64,6 +64,15 @@
                   <div class="card-body">
                       <textarea class="form-control" style="height:500px;" v-model="currentNote.text" v-if="editMode"></textarea>
                       <p v-else style="white-space: pre; overflow-x: auto;">{{currentNote.text}}</p>
+                      
+                      <div v-if="currentNote.files.length > 0">
+                        <ul class="list-group">
+                            <li class="list-group-item" v-for="file in currentNote.files" v-bind:key="file.id">
+                                <i class="fas fa-paperclip me-2"></i>{{file.name}} <small>({{formatFileSize(file.size)}})</small>
+                            </li>
+                        </ul>
+                      </div>
+
                   </div>
                   <div class="card-footer" v-if="selectedIndex !== null">
                       <div style="float:left;">
@@ -102,6 +111,7 @@ export default {
         id: null,
         title: 'No note selected',
         text: 'Select a note to see the contents',
+        files: [],
       },
       notes: [],
       selectedIndex: null,
@@ -126,103 +136,132 @@ export default {
       .catch(error => {
           console.log(error);
       });
-  },
-  selectNote(index) {
+    },
+    selectNote(index) {
 
-      if(this.editMode) {
-          if(!confirm("If you open another note, all unsaved changes will be lost. Are you sure?")) {
-              return;
-          }
-      }
+        // Ask for confirmation if editing note
+        if(this.editMode) {
+            if(!confirm("If you open another note, all unsaved changes will be lost. Are you sure?")) {
+                return;
+            }
+        }
 
-      this.selectedIndex = index;
-      this.switchViewMode();
-      axios.get(this.host + '/note-details/' + index).then(response => {
+        // Set correct view mode
+        this.selectedIndex = index;
+        this.switchViewMode();
+
+        // Get note 
+        axios.get(this.host + '/note-details/' + index).then(response => {
             this.currentNote = {
                 id: response.data[0].id,
                 title: response.data[0].title,
-                text: response.data[0].text
+                text: response.data[0].text,
+                files: []
             }
-      })
-      .catch(error => {
-          console.log(error);
-      });
-  },
-  addNote() {
-      const requestBody = {
-          title: this.newNote.title,
-          text: this.newNote.text
-      }
 
-      this.createNoteLabel = 'Saving...';
+            // Get note files
+            this.getNoteFiles(index);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    },
+    getNoteFiles(index) {
+        axios.get(this.host + '/note-details/' + index + '/files').then(response => {
+            this.currentNote.files = response.data;
+            console.log(this.currentNote.files);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    },
+    addNote() {
+        const requestBody = {
+            title: this.newNote.title,
+            text: this.newNote.text
+        }
 
-      axios.post(this.host + '/add-note', requestBody).then(response => {
-          // Reset create note popup
-          this.showCreateNoteModal = false;
-          this.newNote.title = ''
-          this.newNote.text = ''
+        this.createNoteLabel = 'Saving...';
 
-          // Replace text in note preview
-          this.currentNote = {
-            id: response.data,
-            title: requestBody.title,
-            text: requestBody.text
-          }
+        axios.post(this.host + '/add-note', requestBody).then(response => {
+            // Reset create note popup
+            this.showCreateNoteModal = false;
+            this.newNote.title = ''
+            this.newNote.text = ''
 
-          // Preselect new note
-          this.selectedIndex = response.data;
-        
-          setTimeout(() => {
-            // Execute this after 1000ms
-            this.loadNotes();
-          }, 1000);
-      })
-      .catch(error => {
-          // handle the error
-          console.error(error)
-      });
-  },
-  updateNote() {
-      const requestBody = {
-          id: this.currentNote.id,
-          title: this.currentNote.title,
-          text: this.currentNote.text
-      }
+            // Replace text in note preview
+            this.currentNote = {
+                id: response.data,
+                title: requestBody.title,
+                text: requestBody.text,
+                files: []
+            }
 
-      axios.put(this.host + '/update-note', requestBody).then(response => {
-          this.switchViewMode();
-          setTimeout(this.loadNotes, 1000);
-          // handle the response
-          console.log(response.data)
-      })
-      .catch(error => {
-          // handle the error
-          console.error(error)
-      });
-  },
-  cancelChanges() {
-      if(!confirm("Are you sure you want to cancel all changes?")) {
-          return;
-      }
-      this.switchViewMode();
-      this.selectNote(this.selectedIndex);
-  },
-  deleteNote() {
-      if(!confirm("Are you sure you want to delete this note?")) {
-          return;
-      }
-      axios.delete(this.host + '/delete-note/' + this.selectedIndex).then(response => {
-          setTimeout(this.loadNotes, 1000);
-      })
-  },
-  switchEditMode() {
-      this.editMode = true;
-      this.editNoteLabel = "Save changes";
-  },
-  switchViewMode() {
-      this.editMode = false;
-      this.editNoteLabel = "Edit";
-  }
+            // Preselect new note
+            this.selectedIndex = response.data;
+            
+            setTimeout(() => {
+                // Execute this after 1000ms
+                this.loadNotes();
+            }, 1000);
+        })
+        .catch(error => {
+            // handle the error
+            console.error(error)
+        });
+    },
+    updateNote() {
+        const requestBody = {
+            id: this.currentNote.id,
+            title: this.currentNote.title,
+            text: this.currentNote.text
+        }
+
+        axios.put(this.host + '/update-note', requestBody).then(response => {
+            this.switchViewMode();
+            setTimeout(this.loadNotes, 1000);
+            // handle the response
+            console.log(response.data)
+        })
+        .catch(error => {
+            // handle the error
+            console.error(error)
+        });
+    },
+    cancelChanges() {
+        if(!confirm("Are you sure you want to cancel all changes?")) {
+            return;
+        }
+        this.switchViewMode();
+        this.selectNote(this.selectedIndex);
+    },
+    deleteNote() {
+        if(!confirm("Are you sure you want to delete this note?")) {
+            return;
+        }
+        axios.delete(this.host + '/delete-note/' + this.selectedIndex).then(response => {
+            setTimeout(this.loadNotes, 1000);
+        })
+    },
+    switchEditMode() {
+        this.editMode = true;
+        this.editNoteLabel = "Save changes";
+    },
+    switchViewMode() {
+        this.editMode = false;
+        this.editNoteLabel = "Edit";
+    },
+    formatFileSize(size) {
+        if (size >= 1073741824) {
+        return (size / 1073741824).toFixed(2) + ' GB';
+        } else if (size >= 1048576) {
+        return (size / 1048576).toFixed(2) + ' MB';
+        } else if (size >= 1024) {
+        return (size / 1024).toFixed(2) + ' KB';
+        } else {
+        return size + ' bytes';
+        }
+    }
   },
   mounted() {
     this.loadNotes();
