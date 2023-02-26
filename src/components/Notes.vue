@@ -49,7 +49,7 @@
       <div class="row">
           <div class="col-md-3">
               <ul class="list-group" v-for="(note, index) in notes" v-bind:key="note.id">
-                  <li class="list-group-item d-flex justify-content-between align-items-center" :class="{ active: selectedIndex === note.id }" @click="selectNote(note.id)">
+                  <li class="list-group-item d-flex justify-content-between align-items-center" :class="{ active: selectedIndex === note.id }" @click="selectNote(note.id)" style="font-size:14px;">
                       {{note.title}}
                       <span class="badge bg-secondary rounded-pill">{{note.date}}</span>
                   </li>
@@ -157,16 +157,19 @@ export default {
       this.createNoteLabel = 'Saving...';
 
       axios.post(this.host + '/add-note', requestBody).then(response => {
+          // Reset create note popup
           this.showCreateNoteModal = false;
           this.newNote.title = ''
           this.newNote.text = ''
 
+          // Replace text in note preview
           this.currentNote = {
             id: response.data,
             title: requestBody.title,
             text: requestBody.text
           }
 
+          // Preselect new note
           this.selectedIndex = response.data;
         
           setTimeout(() => {
