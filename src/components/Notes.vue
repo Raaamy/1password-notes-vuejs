@@ -91,7 +91,8 @@ export default {
   name: 'MyNotes',
   data() {
     return {
-      host: 'http://notes.snct.nl',
+      //host: 'http://notes.snct.nl',
+      host: 'http://localhost:8000',
       title: '1Password Notes',
       newNote: {
         title: '',
@@ -137,11 +138,11 @@ export default {
       this.selectedIndex = index;
       this.switchViewMode();
       axios.get(this.host + '/note-details/' + index).then(response => {
-          this.currentNote = {
-              id: response.data[0].id,
-              title: response.data[0].title,
-              text: response.data[0].text
-          }
+            this.currentNote = {
+                id: response.data[0].id,
+                title: response.data[0].title,
+                text: response.data[0].text
+            }
       })
       .catch(error => {
           console.log(error);
@@ -160,9 +161,18 @@ export default {
           this.newNote.title = ''
           this.newNote.text = ''
 
-          setTimeout(this.loadNotes, 1000);
-          // handle the response
-          // console.log(response.data)
+          this.currentNote = {
+            id: response.data,
+            title: requestBody.title,
+            text: requestBody.text
+          }
+
+          this.selectedIndex = response.data;
+        
+          setTimeout(() => {
+            // Execute this after 1000ms
+            this.loadNotes();
+          }, 1000);
       })
       .catch(error => {
           // handle the error
