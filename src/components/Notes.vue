@@ -48,8 +48,8 @@
   <div class="container-fluid mt-3">
       <div class="row">
           <div class="col-md-3">
-              <ul class="list-group" v-for="(note, index) in notes" v-bind:key="note.id">
-                  <li class="list-group-item d-flex justify-content-between align-items-center" :class="{ active: selectedIndex === note.id }" @click="selectNote(note.id)" style="font-size:14px;">
+              <ul class="list-group">
+                  <li class="list-group-item d-flex justify-content-between align-items-center" v-for="(note, index) in notes" v-bind:key="note.id" :class="{ active: selectedIndex === note.id }" @click="selectNote(note.id)" style="font-size:14px;">
                       {{note.title}}
                       <span class="badge bg-secondary rounded-pill">{{note.date}}</span>
                   </li>
@@ -62,15 +62,18 @@
                       <h5 style="margin-top: .5rem; margin-bottom: .5rem;" v-else>{{currentNote.title}}</h5>
                   </div>
                   <div class="card-body">
-                      <textarea class="form-control" style="height:500px;" v-model="currentNote.text" v-if="editMode"></textarea>
+                      <textarea class="form-control" style="height:400px;" v-model="currentNote.text" v-if="editMode"></textarea>
                       <p v-else style="white-space: pre; overflow-x: auto;">{{currentNote.text}}</p>
                       
+                      <div class="mb-3" v-if="editMode && currentNote.files.length > 0"></div>
+
                       <div v-if="currentNote.files.length > 0">
                         <ul class="list-group">
                             <li class="list-group-item" v-for="file in currentNote.files" v-bind:key="file.id">
-                                <i class="fas fa-paperclip me-2"></i>{{file.name}} <small>({{formatFileSize(file.size)}})</small>
+                                <i class="fas fa-paperclip me-2"></i><span style="font-size:14px;">{{file.name}}</span> <small>({{formatFileSize(file.size)}})</small>
                             </li>
                         </ul>
+                        <span style="font-size:12px">Attachments can only be opened in the 1Password app</span>
                       </div>
 
                   </div>
