@@ -77,7 +77,7 @@
                                 <i class="fas fa-paperclip me-2"></i><span style="font-size:14px;">{{file.name}}</span> <small>({{formatFileSize(file.size)}})</small>
                             </li>
                         </ul>
-                        <span style="font-size:12px">Attachments can only be opened in the 1Password app</span>
+                        <span style="font-size:12px">* Attachments can only be opened in the 1Password app</span>
                       </div>
 
                   </div>
