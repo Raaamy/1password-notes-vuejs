@@ -3,10 +3,7 @@
   <!-- Top row with app title -->
   <div class="container-fluid bg-light py-3">
       <div class="row">
-          <div class="col-4 text-center">
-              
-          </div>
-          <div class="col-4 text-center">
+          <div class="col-8">
               <h4><img src="/img/1password_icon.png" height="36" width="36"> {{title}}</h4>
           </div>
           <div class="col-4 text-end">
@@ -55,11 +52,11 @@
                   </li>
               </ul>
           </div>
-          <div class="col-md-9">
+          <div class="col-md-9" :class="{ 'd-sm-none': editMode }">
               <div class="card">
                   <div class="card-header">
                       <input type="text" class="form-control" v-model="currentNote.title" v-if="editMode">
-                      <h5 style="margin-top: .5rem; margin-bottom: .5rem;" v-else>{{currentNote.title}}</h5>
+                      <h5 style="margin-top: .5rem; margin-bottom: .5rem;" :class="{ 'fst-italic': currentNote.id == null }" v-else>{{currentNote.title}}</h5>
                   </div>
                   <div class="card-body">
                       <textarea class="form-control" style="height:400px;" v-model="currentNote.text" v-if="editMode"></textarea>
@@ -103,8 +100,8 @@ export default {
   name: 'MyNotes',
   data() {
     return {
-      //host: 'http://notes.snct.nl',
-      host: 'http://localhost:8000',
+      host: 'http://notes.snct.nl',
+      //host: 'http://localhost:8000',
       title: '1Password Notes',
       newNote: {
         title: '',
