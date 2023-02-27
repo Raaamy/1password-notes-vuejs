@@ -4,11 +4,18 @@
   <div class="container-fluid bg-light py-3">
       <div class="row">
           <div class="col-8">
-              <h4><img src="/img/1password_icon.png" height="36" width="36"> {{title}}</h4>
+            <div v-if="!isMobile || currentNote.id == null">
+              <h5><img src="/img/1password_icon.png" height="24" width="24"> {{title}}</h5>
+            </div>
+            <div v-else>
+                <button @click="resetView()" type="button" class="btn btn-primary">
+                    <i class="fa-solid fa-arrow-left"></i> Go back
+                </button>
+            </div>
           </div>
           <div class="col-4 text-end">
               <button type="button" class="btn btn-primary" @click="showCreateNoteModal = true" style="margin-right:20px">
-                  <i class="fa-solid fa-pen-to-square"></i>
+                  <i class="fa-solid fa-plus"></i>
               </button>
           </div>
       </div>
@@ -44,7 +51,7 @@
   <!-- Split view with note list on the left and note content on the right -->
   <div class="container-fluid mt-3">
       <div class="row">
-          <div class="col-md-3">
+          <div class="col-md-3" v-if="!isMobile || currentNote.id == null">
               <ul class="list-group">
                   <li class="list-group-item d-flex justify-content-between align-items-center" v-for="(note, index) in notes" v-bind:key="note.id" :class="{ active: selectedIndex === note.id }" @click="selectNote(note.id)" style="font-size:14px;">
                       {{note.title}}
@@ -52,7 +59,7 @@
                   </li>
               </ul>
           </div>
-          <div class="col-md-9">
+          <div class="col-md-9" v-if="!isMobile || currentNote.id !== null">
               <div class="card">
                   <div class="card-header">
                       <input type="text" class="form-control" v-model="currentNote.title" v-if="editMode">
@@ -76,8 +83,8 @@
                   </div>
                   <div class="card-footer" v-if="selectedIndex !== null">
                       <div style="float:left;">
-                        <button class="btn" :class="{ 'btn-primary': !editMode, 'btn-success': editMode }" style="margin-right:10px;" @click="!editMode ? switchEditMode() : updateNote()">
-                          {{editNoteLabel}}
+                        <button class="btn" :class="{ 'btn-secondary': !editMode, 'btn-success': editMode }" style="margin-right:10px;" @click="!editMode ? switchEditMode() : updateNote()">
+                            {{ editNoteLabel }}
                         </button>
                         <span v-if="editMode" style="cursor:pointer; margin-left:20px" @click="cancelChanges()">Cancel</span>
                       </div>
@@ -119,6 +126,7 @@ export default {
       createNoteLabel: 'Create note',
       editNoteLabel: 'Edit',
       editMode: false,
+      isMobile: false
     };
   },
   methods: {
@@ -136,6 +144,26 @@ export default {
       .catch(error => {
           console.log(error);
       });
+    },
+    resetView() { 
+
+        // Ask for confirmation if editing note
+        if(this.editMode) {
+            if(!confirm("If you open another note, all unsaved changes will be lost. Are you sure?")) {
+                return;
+            }
+        }
+
+        this.currentNote = {
+            id: null,
+            title: 'No note selected',
+            text: 'Select a note to see the contents',
+            files: [],
+        };
+
+        // Set correct view mode
+        this.selectedIndex = null;
+        this.switchViewMode(); 
     },
     selectNote(index) {
 
@@ -264,6 +292,7 @@ export default {
     }
   },
   mounted() {
+    this.isMobile = window.screen.width < 768 || window.screen.height < 768 ? true : false;
     this.loadNotes();
   },
   watch: {
