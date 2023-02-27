@@ -52,7 +52,7 @@
                   </li>
               </ul>
           </div>
-          <div class="col-md-9" :class="{ 'd-sm-none': editMode }">
+          <div class="col-md-9">
               <div class="card">
                   <div class="card-header">
                       <input type="text" class="form-control" v-model="currentNote.title" v-if="editMode">
