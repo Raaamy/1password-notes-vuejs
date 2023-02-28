@@ -25,6 +25,10 @@
                     <input type="text" class="form-control" id="op_vault_uuid" name="op_vault_uuid" v-model="config.op_vault_uuid" required>
                 </div>
                 <div class="mb-3">
+                    <label for="op_connect_server_host" class="form-label">1Password Connect Server URL</label>
+                    <input type="text" class="form-control" id="op_connect_server_host" name="op_connect_server_host" v-model="config.op_connect_server_host" required>
+                </div>
+                <div class="mb-3">
                     <button type="button" class="btn btn-success" id="btnStoreConfig" name="btnStoreConfig" @click="storeConfig()">Connect to 1Password</button>
                 </div>
             </form>
@@ -41,7 +45,8 @@ export default {
       title: 'Notes',
       config: {
         op_api_token: null,
-        op_vault_uuid: null
+        op_vault_uuid: null,
+        op_connect_server_host: null
       }
     };
   },
@@ -52,6 +57,7 @@ export default {
     storeConfig() {
       this.updateLocalStorage('op_api_token', this.config.op_api_token);
       this.updateLocalStorage('op_vault_uuid', this.config.op_vault_uuid);
+      this.updateLocalStorage('op_connect_server_host', this.config.op_connect_server_host);
       window.location.reload();
     },
   },
@@ -65,6 +71,7 @@ export default {
       return {
         op_api_token: localStorage.getItem('op_api_token') || null,
         op_vault_uuid: localStorage.getItem('op_vault_uuid') || null,
+        op_connect_server_host: localStorage.getItem('op_connect_server_host') || null,
       };
     },
   },

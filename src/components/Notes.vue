@@ -114,6 +114,7 @@ export default {
         headers: {
             OP_API_TOKEN: localStorage.getItem('op_api_token') || null,
             OP_VAULT_UUID: localStorage.getItem('op_vault_uuid') || null,
+            OP_CONNECT_SERVER_URL: localStorage.getItem('op_connect_server_host') || null,
         }
       },
       newNote: {
