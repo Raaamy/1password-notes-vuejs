@@ -109,7 +109,7 @@ export default {
     return {
       host: 'http://notes.snct.nl',
       //host: 'http://localhost:8000',
-      title: '1Password Notes',
+      title: 'Notes',
       newNote: {
         title: '',
         text: '',
