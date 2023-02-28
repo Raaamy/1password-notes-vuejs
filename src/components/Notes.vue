@@ -49,7 +49,7 @@
   </div>
 
   <!-- Split view with note list on the left and note content on the right -->
-  <div class="container-fluid mt-3">
+  <div class="container-fluid mt-3 mb-3">
       <div class="row">
           <div class="col-md-3" v-if="!isMobile || currentNote.id == null">
               <ul class="list-group">
@@ -75,8 +75,8 @@
                       </div>
                   </div>
                   <div class="card-body">
-                      <textarea class="form-control" style="height:400px;" v-model="currentNote.text" v-if="editMode"></textarea>
-                      <p v-else style="white-space: pre; overflow-x: auto;">{{currentNote.text}}</p>
+                      <textarea class="form-control" style="height:400px; font-size:15px;" v-model="currentNote.text" v-if="editMode"></textarea>
+                      <p v-else style="white-space: pre; overflow-x: auto; font-size:15px;">{{currentNote.text}}</p>
                       
                       <div class="mb-3" v-if="editMode && currentNote.files.length > 0"></div>
 
