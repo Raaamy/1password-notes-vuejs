@@ -310,6 +310,14 @@ export default {
   mounted() {
     this.isMobile = window.screen.width < 768 || window.screen.height < 768 ? true : false;
     this.loadNotes();
+    document.addEventListener('keydown', (event) => {
+      if (this.editMode && event.key === 'Escape') {
+        this.cancelChanges();
+      }
+    });
+  },
+  beforeUnmount() {
+    document.removeEventListener('keydown', () => {});
   },
   watch: {
   },
