@@ -110,6 +110,13 @@ export default {
       //host: 'http://notes.snct.nl',
       host: 'http://localhost:8000',
       title: 'Notes',
+      requestHeaders: {
+        headers: {
+            op_connect_server_host: localStorage.getItem('op_connect_server_host') || null,
+            op_api_token: localStorage.getItem('op_api_token') || null,
+            op_vault_uuid: localStorage.getItem('op_vault_uuid') || null,
+        }
+      },
       newNote: {
         title: '',
         text: '',
@@ -131,7 +138,7 @@ export default {
   },
   methods: {
     loadNotes() {
-      axios.get(this.host + '/list-notes').then(response => {
+      axios.get(this.host + '/list-notes', this.requestHeaders).then(response => {
           this.notes = response.data.map(item => {
               return {
                   id: item.id,
@@ -179,7 +186,7 @@ export default {
         this.switchViewMode();
 
         // Get note 
-        axios.get(this.host + '/note-details/' + index).then(response => {
+        axios.get(this.host + '/note-details/' + index, this.requestHeaders).then(response => {
             this.currentNote = {
                 id: response.data[0].id,
                 title: response.data[0].title,
@@ -195,7 +202,7 @@ export default {
         });
     },
     getNoteFiles(index) {
-        axios.get(this.host + '/note-details/' + index + '/files').then(response => {
+        axios.get(this.host + '/note-details/' + index + '/files', this.requestHeaders).then(response => {
             this.currentNote.files = response.data;
             console.log(this.currentNote.files);
         })
@@ -211,7 +218,7 @@ export default {
 
         this.createNoteLabel = 'Saving...';
 
-        axios.post(this.host + '/add-note', requestBody).then(response => {
+        axios.post(this.host + '/add-note', requestBody, this.requestHeaders).then(response => {
             // Reset create note popup
             this.showCreateNoteModal = false;
             this.newNote.title = ''
@@ -245,7 +252,7 @@ export default {
             text: this.currentNote.text
         }
 
-        axios.put(this.host + '/update-note', requestBody).then(response => {
+        axios.put(this.host + '/update-note', requestBody, this.requestHeaders).then(response => {
             this.switchViewMode();
             setTimeout(this.loadNotes, 1000);
             // handle the response
@@ -267,7 +274,7 @@ export default {
         if(!confirm("Are you sure you want to delete this note?")) {
             return;
         }
-        axios.delete(this.host + '/delete-note/' + this.selectedIndex).then(response => {
+        axios.delete(this.host + '/delete-note/' + this.selectedIndex, this.requestHeaders).then(response => {
             setTimeout(this.loadNotes, 1000);
         })
     },
