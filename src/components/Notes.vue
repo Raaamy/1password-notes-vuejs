@@ -64,6 +64,15 @@
                   <div class="card-header">
                       <input type="text" class="form-control" v-model="currentNote.title" v-if="editMode">
                       <h5 style="margin-top: .5rem; margin-bottom: .5rem;" :class="{ 'fst-italic': currentNote.id == null }" v-else>{{currentNote.title}}</h5>
+
+                      <div v-if="!editMode && currentNote.id !== null">
+                        <a :href="`https://my.1password.com/vaults/${requestHeaders.headers.OP_VAULT_UUID}/allitems/${currentNote.id}`" target="_blank" class="btn btn-link" style="font-size:12px; padding:0; display: ;">
+                            <i class="fa-solid fa-external-link"></i> Open on 1Password.com
+                        </a>
+                        <a :href="`onepassword://open/${requestHeaders.headers.OP_VAULT_UUID}/${currentNote.id}`" class="btn btn-link" style="font-size:12px; padding:0; display: table-row;">
+                            <i class="fa-solid fa-external-link"></i> Open in 1Password-app
+                        </a>
+                      </div>
                   </div>
                   <div class="card-body">
                       <textarea class="form-control" style="height:400px;" v-model="currentNote.text" v-if="editMode"></textarea>
