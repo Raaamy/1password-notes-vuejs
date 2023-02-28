@@ -17,10 +17,6 @@
           <div class="col-12">
             <form class="form-group">
                 <div class="mb-3">
-                    <label for="op_connect_server_host" class="form-label">1Password Connect Server Host</label>
-                    <input type="text" class="form-control" id="op_connect_server_host" name="op_connect_server_host" v-model="config.op_connect_server_host" required >
-                </div>
-                <div class="mb-3">
                     <label for="op_api_token" class="form-label">1Password API Token</label>
                     <input type="text" class="form-control" id="op_api_token" name="op_api_token" v-model="config.op_api_token" required >
                 </div>
@@ -44,7 +40,6 @@ export default {
     return {
       title: 'Notes',
       config: {
-        op_connect_server_host: null,
         op_api_token: null,
         op_vault_uuid: null
       }
@@ -55,7 +50,6 @@ export default {
       localStorage.setItem(key, value);
     },
     storeConfig() {
-      this.updateLocalStorage('op_connect_server_host', this.config.op_connect_server_host);
       this.updateLocalStorage('op_api_token', this.config.op_api_token);
       this.updateLocalStorage('op_vault_uuid', this.config.op_vault_uuid);
       window.location.reload();
@@ -69,7 +63,6 @@ export default {
   computed: {
     storageValues() {
       return {
-        op_connect_server_host: localStorage.getItem('op_connect_server_host') || null,
         op_api_token: localStorage.getItem('op_api_token') || null,
         op_vault_uuid: localStorage.getItem('op_vault_uuid') || null,
       };

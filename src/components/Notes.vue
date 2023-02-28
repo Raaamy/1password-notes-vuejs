@@ -112,9 +112,8 @@ export default {
       title: 'Notes',
       requestHeaders: {
         headers: {
-            op_connect_server_host: localStorage.getItem('op_connect_server_host') || null,
-            op_api_token: localStorage.getItem('op_api_token') || null,
-            op_vault_uuid: localStorage.getItem('op_vault_uuid') || null,
+            OP_API_TOKEN: localStorage.getItem('op_api_token') || null,
+            OP_VAULT_UUID: localStorage.getItem('op_vault_uuid') || null,
         }
       },
       newNote: {

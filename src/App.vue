@@ -21,7 +21,6 @@ export default {
   methods: {
     shouldShowConfig() {
       return (
-        this.storageValues.op_connect_server_host === null ||
         this.storageValues.op_api_token === null ||
         this.storageValues.op_vault_uuid === null
       );
@@ -36,7 +35,6 @@ export default {
   computed: {
     storageValues() {
       return {
-        op_connect_server_host: localStorage.getItem('op_connect_server_host') || null,
         op_api_token: localStorage.getItem('op_api_token') || null,
         op_vault_uuid: localStorage.getItem('op_vault_uuid') || null,
       };
