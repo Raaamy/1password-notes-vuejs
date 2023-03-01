@@ -3,7 +3,7 @@
   <!-- Top row with app title -->
   <div class="container-fluid bg-light py-3">
       <div class="row">
-          <div class="col-8">
+          <div class="col-4">
             <div v-if="!isMobile || currentNote.id == null">
               <h5><img src="/img/1password_icon.png" height="24" width="24"> {{title}}</h5>
             </div>
@@ -13,7 +13,7 @@
                 </button>
             </div>
           </div>
-          <div class="col-4 text-end">
+          <div class="col-8 text-end">
               <button type="button" class="btn btn-light" @click="logout()" style="margin-right:20px">
                 <i class="fa fa-sign-out" aria-hidden="true"></i>
               </button>
