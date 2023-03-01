@@ -14,8 +14,11 @@
             </div>
           </div>
           <div class="col-4 text-end">
+              <button type="button" class="btn btn-light" @click="logout()" style="margin-right:20px">
+                <i class="fa fa-sign-out" aria-hidden="true"></i>
+              </button>
               <button type="button" class="btn btn-primary" @click="showCreateNoteModal = true" style="margin-right:20px">
-                  <i class="fa-solid fa-plus"></i>
+                  <i class="fa-solid fa-plus"></i> Add note
               </button>
           </div>
       </div>
@@ -213,7 +216,6 @@ export default {
     getNoteFiles(index) {
         axios.get(this.host + '/note-details/' + index + '/files', this.requestHeaders).then(response => {
             this.currentNote.files = response.data;
-            console.log(this.currentNote.files);
         })
         .catch(error => {
             console.log(error);
@@ -265,7 +267,6 @@ export default {
             this.switchViewMode();
             setTimeout(this.loadNotes, 1000);
             // handle the response
-            console.log(response.data)
         })
         .catch(error => {
             // handle the error
@@ -294,6 +295,14 @@ export default {
     switchViewMode() {
         this.editMode = false;
         this.editNoteLabel = "Edit";
+    },
+    logout() {
+        for (let key in localStorage) {
+            if (key === 'op_api_token' || key === 'op_vault_uuid' || key === 'op_connect_server_host') {
+                localStorage.removeItem(key);
+            }
+        }
+        window.location.reload();
     },
     formatFileSize(size) {
         if (size >= 1073741824) {
