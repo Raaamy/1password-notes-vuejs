@@ -1,5 +1,5 @@
 <template>
-  <Settings v-if="shouldShowConfig()" />
+  <Settings v-if="authGuest()" />
   <Notes v-else />
 </template>
 
@@ -19,7 +19,7 @@ export default {
     };
   },
   methods: {
-    shouldShowConfig() {
+    authGuest() {
       return (
         this.storageValues.op_api_token === null ||
         this.storageValues.op_vault_uuid === null || 
