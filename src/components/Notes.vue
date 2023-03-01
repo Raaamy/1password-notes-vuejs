@@ -116,7 +116,7 @@ export default {
   name: 'MyNotes',
   data() {
     return {
-      host: 'http://notes.snct.nl',
+      host: 'http://10.147.18.215:8000',
       //host: 'http://localhost:8000',
       title: 'Notes',
       requestHeaders: {
