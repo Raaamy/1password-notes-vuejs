@@ -81,15 +81,20 @@
                       <textarea class="form-control" style="height:400px; font-size:15px;" v-model="currentNote.text" v-if="editMode"></textarea>
                       <p v-else style="white-space: pre; overflow-x: auto; font-size:15px;">{{currentNote.text}}</p>
                       
-                      <div class="mb-3" v-if="editMode && currentNote.files.length > 0"></div>
+                      <div class="mb-3" v-if="editMode"></div>
 
-                      <div v-if="currentNote.files.length > 0">
+                      <div v-if="currentNote.files.length > 0 || editMode">
                         <ul class="list-group">
                             <li class="list-group-item" v-for="file in currentNote.files" v-bind:key="file.id">
                                 <i class="fas fa-paperclip me-2"></i><span style="font-size:14px;">{{file.name}}</span> <small>({{formatFileSize(file.size)}})</small>
                             </li>
+                            <li v-if="editMode" class="list-group-item">
+                                <label for="noteEditfileUpload" class="form-label">Add attachment</label>
+                                <input class="form-control" type="file" id="noteEditfileUpload" @change="uploadFile" multiple>
+                                <span style="font-size:12px">* Attachments can only be opened in the 1Password app</span>
+                            </li>
                         </ul>
-                        <span style="font-size:12px">* Attachments can only be opened in the 1Password app</span>
+                        
                       </div>
 
                   </div>
@@ -119,8 +124,8 @@ export default {
   name: 'MyNotes',
   data() {
     return {
-      host: 'http://192.168.192.1:8000',
-      //host: 'http://localhost:8000',
+      //host: 'http://192.168.192.1:8000',
+      host: 'http://localhost:8000',
       title: 'Notes',
       requestHeaders: {
         headers: {
@@ -140,6 +145,7 @@ export default {
         files: [],
       },
       notes: [],
+      fileUploads: null,
       selectedIndex: null,
       showCreateNoteModal: false,
       createNoteLabel: 'Create note',
@@ -287,6 +293,22 @@ export default {
         axios.delete(this.host + '/delete-note/' + this.selectedIndex, this.requestHeaders).then(response => {
             setTimeout(this.loadNotes, 1000);
         })
+    },
+    uploadFile(event) {
+        const files = event.target.files;
+        const formData = new FormData();
+        
+        for(let i = 0; i < files.length; i++) {
+            let file = files[i];
+            formData.append('files[]', file);
+        }
+        axios.post('/upload', formData)
+        .then(response => {
+            console.log(response.data);
+        })
+        .catch(error => {
+            console.log(error);
+        });
     },
     switchEditMode() {
         this.editMode = true;
