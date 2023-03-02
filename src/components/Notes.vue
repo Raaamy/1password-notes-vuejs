@@ -86,7 +86,7 @@
                       <div v-if="currentNote.files.length > 0">
                         <ul class="list-group">
                             <li class="list-group-item" v-for="file in currentNote.files" v-bind:key="file.id">
-                                <i class="fas fa-paperclip me-2"></i><span style="font-size:14px;">{{file.name}}</span> <small>({{formatFileSize(file.size)}})</small>
+                                <i class="fas fa-paperclip me-2"></i><span style="font-size:14px;">{{file.name}}</span> <small>({{formatFileSize(file.size)}})</small> <a href="#" @click="getFileContent(file.id, file.name)">Download</a>
                             </li>
                         </ul>
                         <span style="font-size:12px">* Attachments can only be opened in the 1Password app</span>
@@ -119,8 +119,8 @@ export default {
   name: 'MyNotes',
   data() {
     return {
-      host: 'http://192.168.192.1:8000',
-      //host: 'http://localhost:8000',
+      //host: 'http://192.168.192.1:8000',
+      host: 'http://localhost:8000',
       title: 'Notes',
       requestHeaders: {
         headers: {
@@ -221,6 +221,14 @@ export default {
             console.log(error);
         });
     },
+    getFileContent(fileId, fileName) {
+        axios.get(this.host + '/file-details/' + this.selectedIndex + '/files/' + fileId + '/content', this.requestHeaders).then(response => {
+            this.downloadFile(response.data, fileName);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    },
     addNote() {
         const requestBody = {
             title: this.newNote.title,
@@ -287,6 +295,22 @@ export default {
         axios.delete(this.host + '/delete-note/' + this.selectedIndex, this.requestHeaders).then(response => {
             setTimeout(this.loadNotes, 1000);
         })
+    },
+    downloadFile(fileContent, fileName) {
+        const blob = new Blob([fileContent], { type: 'application/octet-stream' })
+        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+            // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created"
+            window.navigator.msSaveBlob(blob, fileName)
+        } else {
+            const blobUrl = window.URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = blobUrl
+            link.download = fileName
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            window.URL.revokeObjectURL(blobUrl)
+        }
     },
     switchEditMode() {
         this.editMode = true;
