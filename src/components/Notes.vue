@@ -119,7 +119,7 @@ export default {
   name: 'MyNotes',
   data() {
     return {
-      host: 'http://10.147.18.215:8000',
+      host: 'http://192.168.192.1:8000',
       //host: 'http://localhost:8000',
       title: 'Notes',
       requestHeaders: {
