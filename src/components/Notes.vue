@@ -145,7 +145,8 @@ export default {
       createNoteLabel: 'Create note',
       editNoteLabel: 'Edit',
       editMode: false,
-      isMobile: false
+      isMobile: false,
+      timeOutWait: 250
     };
   },
   methods: {
@@ -246,10 +247,7 @@ export default {
             // Preselect new note
             this.selectedIndex = response.data;
             
-            setTimeout(() => {
-                // Execute this after 1000ms
-                this.loadNotes();
-            }, 1000);
+            setTimeout(this.loadNotes, this.timeOutWait);
         })
         .catch(error => {
             // handle the error
@@ -265,7 +263,7 @@ export default {
 
         axios.put(this.host + '/update-note', requestBody, this.requestHeaders).then(response => {
             this.switchViewMode();
-            setTimeout(this.loadNotes, 1000);
+            setTimeout(this.loadNotes, this.timeOutWait);
             // handle the response
         })
         .catch(error => {
@@ -285,7 +283,7 @@ export default {
             return;
         }
         axios.delete(this.host + '/delete-note/' + this.selectedIndex, this.requestHeaders).then(response => {
-            setTimeout(this.loadNotes, 1000);
+            setTimeout(this.loadNotes, this.timeOutWait);
         })
     },
     switchEditMode() {
