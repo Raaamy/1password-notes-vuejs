@@ -1,0 +1,12 @@
+{
+    "appId": "com.1password.notesApp",
+    "productName": "1Password Notes",
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/appicon.icns"
+    }
+  }
+  
