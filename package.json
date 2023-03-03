@@ -1,8 +1,9 @@
 {
-  "name": "1password-notes-vuejs",
+  "name": "1password-notes",
   "version": "0.1.0",
   "private": true,
   "main": "main.js",
+  "icon": "appicon.icns",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

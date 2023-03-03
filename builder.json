@@ -6,7 +6,7 @@
     },
     "mac": {
       "target": "dmg",
-      "icon": "build/appicon.icns"
+      "icon": "appicon.icns"
     }
   }
   

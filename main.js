@@ -7,7 +7,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 1300,
     height: 800,
-    icon: path.join(__dirname, 'build', 'appicon.icns'),
+    icon: path.join(__dirname, 'appicon.icns'),
     webPreferences: {
       nodeIntegration: true // Enable Node.js integration in renderer processes
     }
