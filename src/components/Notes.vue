@@ -79,7 +79,7 @@
                   </div>
                   <div class="card-body">
                       <textarea class="form-control" style="height:400px; font-size:15px;" v-model="currentNote.text" v-if="editMode"></textarea>
-                      <p v-else style="white-space: pre; overflow-x: auto; font-size:15px;">{{currentNote.text}}</p>
+                      <p v-else style="white-space: pre; overflow-x: auto; font-size:15px;" v-html="formattedText"></p>
                       
                       <div class="mb-3" v-if="editMode && currentNote.files.length > 0"></div>
 
@@ -148,6 +148,11 @@ export default {
       isMobile: false,
       timeOutWait: 250
     };
+  },
+  computed: {
+    formattedText() {
+      return this.formatText(this.currentNote.text);
+    }
   },
   methods: {
     loadNotes() {
@@ -312,6 +317,20 @@ export default {
         } else {
         return size + ' bytes';
         }
+    },
+    formatText(text) {
+        // Regular expressions to match the different tag patterns
+        const boldRegex = /\[b\](.*?)\[\/b\]/g;
+        const underlineRegex = /\[u\](.*?)\[\/u\]/g;
+        const linkRegex = /\[url="(.*?)"\](.*?)\[\/url\]/g;
+
+        // Replace the tag patterns with the corresponding HTML tags
+        const htmlText = text
+        .replace(boldRegex, '<b>$1</b>')
+        .replace(underlineRegex, '<u>$1</u>')
+        .replace(linkRegex, '<a href="$1">$2</a>');
+
+        return htmlText;
     }
   },
   mounted() {
