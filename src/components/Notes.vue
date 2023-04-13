@@ -78,8 +78,16 @@
                       </div>
                   </div>
                   <div class="card-body">
-                      <textarea class="form-control" style="height:400px; font-size:15px;" v-model="currentNote.text" v-if="editMode"></textarea>
-                      <p v-else style="white-space: pre; overflow-x: auto; font-size:15px;">{{currentNote.text}}</p>
+
+                    <div class="btn-group pb-2" role="group" v-if="editMode">
+                        <button type="button" class="btn btn-secondary fw-bold" @mousedown.prevent="wrapInTag('b')" @touchstart.prevent="wrapInTag('b')">B</button>
+                        <button type="button" class="btn btn-secondary fst-italic" @mousedown.prevent="wrapInTag('i')" @touchstart.prevent="wrapInTag('i')">I</button>
+                        <button type="button" class="btn btn-secondary text-decoration-underline" @mousedown.prevent="wrapInTag('u')" @touchstart.prevent="wrapInTag('u')">U</button>
+                        <button type="button" class="btn btn-secondary" @mousedown.prevent="wrapInTag('url')" @touchstart.prevent="wrapInTag('url')">Link</button>
+                    </div>
+
+                      <textarea ref="textarea" class="form-control" style="height:400px; font-size:15px;" v-model="currentNote.text" v-if="editMode"></textarea>
+                      <p v-else style="white-space: pre; overflow-x: auto; font-size:15px;" v-html="formattedText"></p>
                       
                       <div class="mb-3" v-if="editMode && currentNote.files.length > 0"></div>
 
@@ -148,6 +156,11 @@ export default {
       isMobile: false,
       timeOutWait: 250
     };
+  },
+  computed: {
+    formattedText() {
+      return this.formatText(this.currentNote.text);
+    }
   },
   methods: {
     loadNotes() {
@@ -272,9 +285,11 @@ export default {
         });
     },
     cancelChanges() {
+        /*
         if(!confirm("Are you sure you want to cancel all changes?")) {
             return;
         }
+        */
         this.switchViewMode();
         this.selectNote(this.selectedIndex);
     },
@@ -312,6 +327,30 @@ export default {
         } else {
         return size + ' bytes';
         }
+    },
+    formatText(text) {
+        // Regular expressions to match the different tag patterns
+        const boldRegex = /\[b\](.*?)\[\/b\]/g;
+        const underlineRegex = /\[u\](.*?)\[\/u\]/g;
+        const italicRegex = /\[i\](.*?)\[\/i\]/g;
+        const linkRegex = /\[url="(.*?)"\](.*?)\[\/url\]/g;
+
+        // Replace the tag patterns with the corresponding HTML tags
+        const htmlText = text
+        .replace(boldRegex, '<b>$1</b>')
+        .replace(underlineRegex, '<u>$1</u>')
+        .replace(italicRegex, '<i>$1</i>')
+        .replace(linkRegex, '<a href="$1">$2</a>');
+
+        return htmlText;
+    },
+    wrapInTag(tagName) {
+        // Select the text
+        const start = this.$refs.textarea.selectionStart;
+        const finish = this.$refs.textarea.selectionEnd;
+        const selection = this.currentNote.text.substring(start, finish);
+        const wrappedText = `[${tagName}]${selection}[/${tagName}]`; // Wrap the selected text in the specified tag
+        document.execCommand('insertText', false, wrappedText); // Insert the wrapped text at the cursor position
     }
   },
   mounted() {
