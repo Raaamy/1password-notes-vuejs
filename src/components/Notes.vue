@@ -285,9 +285,11 @@ export default {
         });
     },
     cancelChanges() {
+        /*
         if(!confirm("Are you sure you want to cancel all changes?")) {
             return;
         }
+        */
         this.switchViewMode();
         this.selectNote(this.selectedIndex);
     },
@@ -330,12 +332,14 @@ export default {
         // Regular expressions to match the different tag patterns
         const boldRegex = /\[b\](.*?)\[\/b\]/g;
         const underlineRegex = /\[u\](.*?)\[\/u\]/g;
+        const italicRegex = /\[i\](.*?)\[\/i\]/g;
         const linkRegex = /\[url="(.*?)"\](.*?)\[\/url\]/g;
 
         // Replace the tag patterns with the corresponding HTML tags
         const htmlText = text
         .replace(boldRegex, '<b>$1</b>')
         .replace(underlineRegex, '<u>$1</u>')
+        .replace(italicRegex, '<i>$1</i>')
         .replace(linkRegex, '<a href="$1">$2</a>');
 
         return htmlText;
