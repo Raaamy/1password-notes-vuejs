@@ -349,7 +349,12 @@ export default {
         const start = this.$refs.textarea.selectionStart;
         const finish = this.$refs.textarea.selectionEnd;
         const selection = this.currentNote.text.substring(start, finish);
-        const wrappedText = `[${tagName}]${selection}[/${tagName}]`; // Wrap the selected text in the specified tag
+        let wrappedText;
+        if(tagName === 'url') {
+            wrappedText = `[${tagName}=""]${selection}[/${tagName}]`; // Wrap the selected text in the specified tag
+        } else {
+            wrappedText = `[${tagName}]${selection}[/${tagName}]`; // Wrap the selected text in the specified tag
+        }
         document.execCommand('insertText', false, wrappedText); // Insert the wrapped text at the cursor position
     }
   },
