@@ -340,7 +340,7 @@ export default {
         .replace(boldRegex, '<b>$1</b>')
         .replace(underlineRegex, '<u>$1</u>')
         .replace(italicRegex, '<i>$1</i>')
-        .replace(linkRegex, '<a href="$1">$2</a>');
+        .replace(linkRegex, '<a href="$1" target="_blank">$2</a>');
 
         return htmlText;
     },
